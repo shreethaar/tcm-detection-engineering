@@ -27,5 +27,6 @@ sequence with maxspan=1m
   process.Ext.effective_parent.name != null] by process.Ext.effective_parent.entity_id
 '''
 
-
+# if type = "threshold"
+# threshold=<something>
 
