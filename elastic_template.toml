@@ -1,0 +1,59 @@
+[rule]
+author = ["Shreethaar Arunagirinathan"]
+description = "Insert Description Here"
+from = "now-6m" # this is the default alue, change as needed
+name = "Insert Name Here"
+note = "Insert Analysis Here"
+risk_score = 47
+severity = "medium"
+tags = ["Example","Tag"]
+type = "eql"
+
+query = '''
+process where host.os.type == "windows" and event.type == "start" and
+  process.name: ("powershell.exe", "pwsh.exe", "powershell_ise.exe") and
+  process.command_line : ("*MailboxExportRequest*", "*-Mailbox*-ContentFilter*")
+'''
+## Assign MITRE Tactic & Technique to be assigned one of alerts
+
+[[rule.threat]] # Example Tactic,Technique & Sub-Technique
+framework = "MITRE ATT&CK"
+[[rule.threat.technique]]
+id = "T1005"
+name = "Data from Local System"
+reference = "https://attack.mitre.org/techniques/T1005/"
+
+[[rule.threat.technique]]
+id = "T1114"
+name = "Email Collection"
+reference = "https://attack.mitre.org/techniques/T1114/"
+[[rule.threat.technique.subtechnique]]
+id = "T1114.002"
+name = "Remote Email Collection"
+reference = "https://attack.mitre.org/techniques/T1114/002/"
+
+
+
+[rule.threat.tactic]
+id = "TA0009"
+name = "Collection"
+reference = "https://attack.mitre.org/tactics/TA0009/"
+
+[[rule.threat]]
+framework = "MITRE ATT&CK"
+[[rule.threat.technique]]
+id = "T1059"
+name = "Command and Scripting Interpreter"
+reference = "https://attack.mitre.org/techniques/T1059/"
+[[rule.threat.technique.subtechnique]]
+id = "T1059.001"
+name = "PowerShell"
+reference = "https://attack.mitre.org/techniques/T1059/001/"
+
+
+
+[rule.threat.tactic]
+id = "TA0002"
+name = "Execution"
+reference = "https://attack.mitre.org/tactics/TA0002/"
+
