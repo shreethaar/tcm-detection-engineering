@@ -67,13 +67,49 @@ for root,dirs,files in os.walk("/home/trevorphilips/Desktop/Coding/python/tcm-de
                         filtered_object_array.append(filtered_object)
                         alert_data[file]=filtered_object_array
 
+mitre_tactic_list=['none','reconnaissance','resource development','initial access','execution','persistence','privilege escalation','defense evasion','credential access','discovery','lateral movement','collection','command and control','exfiltration','impact']
 
-print(alert_data)
+for file in alert_data:
+    for line in alert_data[file]:
+        tactic=line['tactic'].lower()
+        technique_id=line['technique_id']
+        subtechnique_id=line['subtechnique_id']
+        print(file+" : "+tactic+" : "+technique_id+" : "+subtechnique_id)
 
-'''
-print(mitreMapped['T1123']['name'])
-print('\n')
-print(mitreMapped['T1144'])
-'''
+        # Check to ensure MITRE Tactics exist
+        if tactic not in mitre_tactic_list:
+            print("The MITRE Tactic Supplied Does Not Exist: "+"\""+tactic+"\""+" in "+ file)
+
+        # Check to make sure the MITRE Technique ID is valid
+        try: 
+            if mitreMapped[technique_id]:
+                pass
+        except KeyError:
+            print("Invalid MITRE Technique ID: " + "\"" + technique_id + "\"" + " in "+ file)
+
+        # Check to see if the MITRE TID + Name combination is valid
+        try:
+            mitre_name=mitreMapped[technique_id]['name']
+            alert_name=line['technique_name']
+            if alert_name != mitre_name:
+                print("MITRE Technique ID and Name Mismatch is " + file + " EXPECTED: " + "\"" + mitre_name + "\"" + " GIVEN: " + "\"" + alert_name + "\"")
+        except KeyError:
+            pass
+
+        # Check to see if the SubTID + Name Entry is valid
+        try:
+            if subtechnique_id != "none":
+                mitre_name=mitreMapped[subtechnique_id]['name']
+                alert_name=line['subtechnique_name']
+                if alert_name != mitre_name:
+                    print("MITRE Sub-Technique ID and Name Mismatch is " + file + " EXPECTED: " + "\"" + mitre_name + "\"" + " GIVEN: " + "\"" + alert_name + "\"")
+        except KeyError:
+            pass
+        # Check to see if the technique is deprecated
+        try:
+            if mitreMapped[technique_id]['deprecated']==True:
+                print("Deprecated MITRE Technique ID: " + "\"" + technique_id + "\"" + " in " + file)
+        except KeyError:
+            pass
 
 
